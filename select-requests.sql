@@ -34,7 +34,7 @@ SELECT rec.name
   SELECT name, COUNT(*)
     FROM Jenres AS j
          LEFT JOIN ArtistsJenres AS aj
-  	            ON aj.jenre_id = j.jenre_id
+  		ON aj.jenre_id = j.jenre_id
 GROUP BY name;
 
 --2
@@ -48,17 +48,17 @@ SELECT COUNT(*)
   SELECT alb.name, AVG(duration)
     FROM Albums AS alb
          LEFT JOIN Recordings AS rec 
-	              ON rec.album_id = alb.album_id
+	        ON rec.album_id = alb.album_id
 GROUP BY alb.name;
 
 --4
   SELECT art.name 
     FROM MusicalArtists AS art
          LEFT JOIN AlbumsArtists AS aa 
-	              ON art.musical_artist_id = aa.musical_artist_id
+	        ON art.musical_artist_id = aa.musical_artist_id
 	       LEFT JOIN Albums AS a 
 	              ON aa.album_id = a.album_id
-		         WHERE a.year != 2020
+		   WHERE a.year != 2020
 GROUP BY art.name;
 
 --5
@@ -72,21 +72,21 @@ SELECT col.name
 SELECT alb.name 
   FROM Albums AS alb
        LEFT JOIN AlbumsArtists AS aa 
-	            ON aa.album_id = alb.album_id
+	      ON aa.album_id = alb.album_id
            WHERE aa.musical_artist_id IN 
-		             (SELECT aj.musical_artist_id 
-				            FROM ArtistsJenres AS aj 
-				        GROUP BY musical_artist_id 
-				          HAVING COUNT(*) > 2);
+		 (SELECT aj.musical_artist_id 
+		    FROM ArtistsJenres AS aj 
+		GROUP BY musical_artist_id 
+	          HAVING COUNT(*) > 2);
   
 --2
 SELECT rec1.name 
   FROM Recordings AS rec1 
  WHERE rec1.recording_id NOT IN 
        (SELECT rec2.recording_id 
-	        FROM Recordings AS rec2
-			         RIGHT JOIN CollectionsRecordings AS cr 
-			                 ON rec2.recording_id = cr.recording_id);
+	  FROM Recordings AS rec2
+	       RIGHT JOIN CollectionsRecordings AS cr 
+		       ON rec2.recording_id = cr.recording_id);
 
 --3
   SELECT art.name 
@@ -103,12 +103,12 @@ GROUP BY art.name;
   SELECT alb.name 
     FROM Albums AS alb
          LEFT JOIN Recordings AS rec 
-   	            ON rec.album_id = alb.album_id
+   	        ON rec.album_id = alb.album_id
 GROUP BY alb.name
   HAVING COUNT(rec.recording_id) IN 
-          (SELECT MIN(total) 
-		         FROM (SELECT COUNT(*) as total 
-			               FROM Albums AS alb2
-                          LEFT JOIN Recordings AS rec2 
-						                     ON rec2.album_id = alb2.album_id
-         GROUP BY alb2.name));
+           (SELECT MIN(total) 
+	      FROM (SELECT COUNT(*) as total 
+		      FROM Albums AS alb2
+                           LEFT JOIN Recordings AS rec2 
+				  ON rec2.album_id = alb2.album_id
+          GROUP BY alb2.name));
