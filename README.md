@@ -1,1 +1,7 @@
-# sql-homework
+# Домашнее задание по SQL-запросам.
+
+В репозитории находятся три файла:
+
+* __create-requests.sql__ - файл с CREATE-запросами. Архитектура БД;
+* __insert-requests.sql__ - файл с INSERT-запросами. Данные БД;
+* __select_requests.sql__ - файл с SELECT-запросами. Работа с данными.
