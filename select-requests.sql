@@ -23,10 +23,16 @@ SELECT art.name
  WHERE art.name LIKE '%_ _%';
 
 --5
-SELECT rec.name
-  FROM Recordings AS rec
- WHERE rec.name LIKE '%my%'
-    OR rec.name LIKE '%мой%';
+SELECT name 
+  FROM Recordings 
+ WHERE name ILIKE 'my' 
+    OR name ILIKE '% my' 
+	  OR name ILIKE 'my %' 
+	  OR name ILIKE '% my %' 
+	  OR name ILIKE 'мой' 
+	  OR name ILIKE '% мой' 
+	  OR name ILIKE 'мой %' 
+	  OR name ILIKE '% мой %';
 
 /* Задание 3 */
 
@@ -52,19 +58,25 @@ SELECT COUNT(*)
 GROUP BY alb.name;
 
 --4
-  SELECT art.name 
-    FROM MusicalArtists AS art
-         LEFT JOIN AlbumsArtists AS aa 
-	              ON art.musical_artist_id = aa.musical_artist_id
-	       LEFT JOIN Albums AS a 
-	              ON aa.album_id = a.album_id
-		         WHERE a.year != 2020
-GROUP BY art.name;
+SELECT mus_art.name
+  FROM MusicalArtists AS mus_art
+ WHERE mus_art.musical_artist_id NOT IN (
+	     SELECT musical_artist_id 
+		     FROM AlbumsArtists
+         JOIN Albums ON Albums.album_id = AlbumsArtists.album_id
+		    WHERE year = 2020
+);
 
 --5
-SELECT col.name
-  FROM Collections AS col
- WHERE col.name LIKE '%lil peep%';
+  SELECT col.name 
+    FROM Collections AS col
+		LEFT JOIN CollectionsRecordings AS cr ON col.collection_id = cr.collection_id
+		LEFT JOIN Recordings AS rec ON rec.recording_id = cr.recording_id
+		LEFT JOIN Albums AS alb ON alb.album_id = rec.recording_id
+		LEFT JOIN AlbumsArtists AS aa ON aa.album_id = alb.album_id
+		LEFT JOIN MusicalArtists AS art ON art.musical_artist_id = aa.musical_artist_id
+   WHERE art.musical_artist_id = 5
+GROUP BY col.name;
 
 /* Задание 4 (необязательное)*/
 
@@ -80,13 +92,11 @@ SELECT alb.name
 				          HAVING COUNT(*) > 2);
   
 --2
-SELECT rec1.name 
-  FROM Recordings AS rec1 
- WHERE rec1.recording_id NOT IN 
-       (SELECT rec2.recording_id 
-	        FROM Recordings AS rec2
-			         RIGHT JOIN CollectionsRecordings AS cr 
-			                 ON rec2.recording_id = cr.recording_id);
+SELECT rec.name 
+  FROM Recordings AS rec
+       LEFT JOIN CollectionsRecordings AS cr 
+	          ON rec.recording_id = cr.recording_id
+ WHERE cr.collection_id IS NULL;
 
 --3
   SELECT art.name 
